@@ -36,6 +36,11 @@ $pyScript = "/home/[username]/[cs-path]/CS-Beacon-Notifier/pyScript.py";
     <img src="https://github.com/lynxbinz/CS-Beacon-Notifier/blob/main/images/load-cna-script.png" alt="Image" width="600" />
 </p>
 
+* Or start tmux/screen on server and run agscript to run the Aggresor script
+```console
+# ./agscript {host and creds etc}
+aggressor> load {path to discord_notify.cna}
+```
 * Open the pyScript.py and replace with your Telegram Bot Token and Chat ID
 ```python
 def telegram_bot_msgSender(msg):
@@ -47,11 +52,6 @@ def telegram_bot_msgSender(msg):
 ## Tested On
 * Kali Linux 2023.3
 * Cobalt Strike 4.9.1
-
-### Khmer Version
-<p align="left">
-    <img src="https://github.com/lynxbinz/CS-Beacon-Notifier/blob/main/images/beacon-kh.png" alt="Image" width="800" />
-</p>
 
 ### English Version
 
