@@ -1,0 +1,42 @@
+# Beacon Reconnection Notifier - ÚNICO evento: checkin
+# Notifica: NUEVO o RECONEXIÓN tras >5 min de inactividad
+# 0 impacto en rendimiento
+
+$pyScript = "/home/purpleVPS/telegramNotification.py";
+$threshold = 300;  # 5 minutos
+
+global("%lastCheckin");
+
+on beacon_checkin {
+    $bid  = $1;
+    $now  = time();
+
+    $computer = beacon_info($bid, "computer");
+    $user     = beacon_info($bid, "user");
+    $inIP     = beacon_info($bid, "internal");
+
+    # --- PRIMER CHECK-IN (NUEVO BEACON) ---
+    if (!%lastCheckin[$bid]) {
+        $msg = "NUEVO Beacon: $computer \\ $user";
+        $command = array("python3", $pyScript, $infoText_short);    
+        exec($command);
+        
+        %lastCheckin[$bid] = $now;
+        return;
+    }
+
+    # --- RECONEXIÓN TRAS INACTIVIDAD ---
+    $elapsed = $now - %lastCheckin[$bid];
+
+    if ($elapsed > $threshold) {
+        $mins = floor($elapsed / 60);
+        $msg = "RECONECTADO tras $mins min: $computer \\ $user";
+        $command = array("python3", $pyScript, $infoText_short);    
+        exec($command);
+        blog("[RECON] $computer@$user (ausente $mins min)");
+    }
+    # else: check-in normal → solo actualiza
+
+    # Siempre actualiza el último check-in
+    %lastCheckin[$bid] = $now;
+}
