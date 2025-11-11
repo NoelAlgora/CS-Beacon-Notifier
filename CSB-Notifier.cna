@@ -2,7 +2,7 @@
 # A Cobalt Strike Beacon Notifier Via Telegram Bot
 # Author @lynxbinz
 
-$pyScript = "/home/[username]/[cs-path]/CS-Beacon-Notifier/pyScript.py";
+$pyScript = "/home/purpleVPS/telegramNotification.py";
 
 on beacon_initial {
 	$userName = beacon_info($1, "user");
@@ -13,18 +13,12 @@ on beacon_initial {
     $inIP = beacon_info($1, "internal");
     $exIP = beacon_info($1, "external");
 	$processName = beacon_info($1, "process");
-    $infoText_1 = "New Beacon at Teamserver - User: $userName"
+    $infoText_short = "New Beacon at Teamserver -  $computerName \ $userName";
 
-	$infoText_en = "-----------------------------------------------------------
-You got a Beacon my Lord!!!
-User: $userName
-Computer Name: $computerName
-Operating System: $operatingSystem $architecture $buildVersion
-Process Name: $processName
-Internal IP: $inIP
-External IP: $exIP
------------------------------------------------------------";
-
-	@command = @('python3',$pyScript,$infoText_kh);
-	exec(@command);
+    # Mensaje expandido con más info
+    $infoText_large = "New Beacon at Teamserver - Computer: $computerName | User: $userName | OS: $operatingSystem | Arch: $architecture | Internal IP: $inIP | External IP: $exIP | Process: $processName";
+    
+    $command = array("python3", $pyScript, $infoText_short);    
+    # Usa exec_cmd para ejecutar en el servidor local
+    exec($command);
 }
